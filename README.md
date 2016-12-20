@@ -1,7 +1,7 @@
 
 # qd-ansa 
 
-This library is a python utility library ANSA from Beta CAE Systems SA. 
+This library is a python utility library for ANSA from Beta CAE Systems SA. 
 This project is not affiliated in any way with the official software. 
 
 # Installation
