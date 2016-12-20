@@ -61,9 +61,3 @@ print(entity["UNKNOWN"])
 for card_name, card_value in entity:
     pass
 ```
-
-
-Constructor
-```python
-QDEntity.__init__(self, entity, deck=None)
-```
