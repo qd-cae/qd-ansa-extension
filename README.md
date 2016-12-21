@@ -1,8 +1,9 @@
 
 # qd-ansa 
 
-This library is a python utility library for ANSA from Beta CAE Systems SA. 
-This project is not affiliated in any way with the official software. 
+This library is a python utility library for ANSA from Beta CAE Systems SA. The project is not affiliated in any way with the official software. 
+
+These enhancements make access much easier, and also debugging! This module was written for the reason, that the common scripting API did not feel pythonic enough to me. 
 
 # Installation
 
@@ -10,24 +11,131 @@ Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shar
 
 # Classes
 
-The following classes are implemented for usage:
+
 
 ## QDEntity
 
-Member Functions:
-- ```QDEntity(entity, deck=None)``` - Constructor from an entity, deck=None uses current deck
-- ```QDEntity.convert(arg)``` - Static method, converts to QDEntity any instance itself or within a list/dict
-- ```QDEntity.cards()``` - returns list of card names
-- ```QDEntity.keys()``` - same as function cards()
-- ```QDEntity.values()``` - returns list of values matching the cards/keys
-- ```QDEntity.set_deck(deck)``` - Change entity deck (see ansa.constants)
-- ```QDEntity.__len__()``` - len operator matching number if cards
-- ```QDEntity.__getitem__()``` - overloading of [] operator for getting card values (see below)
-- ```QDEntity.__setitem__()``` - overloading of [] operator for setting card values (see below)
-- ```QDEntity.__iter__()``` - iterate over entity card,value pairs (see example)
+| Member Function | Short Explanation |
+| --- | --- |
+| ```QDEntity(entity, deck=None)``` | Constructor from a ```ansa.base.Entity```
+| ```QDEntity.convert(arg)``` | Static function for conversion of an entity or containers
+| ```QDEntity.cards()``` | Get all of the entities card names as ```list(str)```
+| ```QDEntity.keys()``` | Same as ```QDEntity.cards()```
+| ```QDEntity.values()``` | Get all of the entities card values as ```list```
+| ```QDEntity.set_deck(deck)``` | Set the entity deck manually, use ```ansa.constants```
+| ```QDEntity.__len__()``` | Overloaded ```len```, returns numbe of cards
+| ```QDEntity.__getitem__()``` | Overloaded ```[]```, access entity cards like a dictionary, also accepts lists
+| ```QDEntity.__setitem__()``` | Overloaded ```[]```, change single or multiple card values directly
+| ```QDEntity.__iter__()``` | Overloaded iterator for loops, iterate over card names and values in the entity
+
+------------------
+
+### ```QDEntity(entity, deck=None)```
+
+Constructor of a ```QDEntity``` from an ```ansa.base.Entity```. Deck can be specified with ```ansa.constants``` and uses ```base.CurrentDeck()``` if not specified.
+
+```python
+ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
+qd_entity = QDEntity(ansa_entity)
+```
+
+### ```QDEntity.convert(arg)```
+
+This static method converts any ```ansa.base.Entity``` or any entity within a container (list,tuple,np.array,dict). All other container elements stay untouched!
+
+```python
+ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
+qd_entity = QDEntity.convert(ansa_entity)
+
+entity_list = [ansa_entity,"YAY"]
+entity_list = QDEntity.convert(entity_list) # "YAY" stays untouched
+
+entity_dict = { ansa_entity._id : ansa_entity } # some dictionary
+entity_dict= QDEntity.convert(ansa_entity) # converts keys/values if ansa entity
+```
+
+### ```QDEntity.cards()``` or ```QDEntity.keys()```
+
+Get all the card values of an entity as a list of str.
+
+```python
+qd_entity.cards() # this qd_entity is a "NODE"
+# >>> ['TYPE', 'NID', ... ] 
+```
+
+### ```QDEntity.values()```
+
+Get all the values for the cards as a list of objects.
+
+```python
+qd_entity.values() # this qd_entity is a "NODE"
+# >>> ['GRID', 1, ... ]
+```
+
+### ```QDEntity.set_deck(deck)```
+
+Set the deck of the entity. Use ```ansa.constants```.
+
+```python
+qd_entity.set_deck(ansa.constants.ABAQUS)
+```
+
+### ```QDEntity.__len__()```
+
+Overloaded len operator. Returns the number of cards of the entity.
+
+```python
+len(qd_entity)
+# >>> 7
+```
+
+### ```QDEntity.__getitem__(key)```
+
+Oerloaded [] operator. Any card in the entity can now be accessed like a dictionary. The argument may be either a ```str``` or a ```list(str)```. In the second case a list is returned.
+
+```python
+qd_entity["TYPE"] # entity is a mesh node
+# >>> 'GRID'
+qd_entity["NID"]
+# >>> 1
+qd_entity["TYPE","NID"] # also lists work
+# >>> ['GRID',1]
+
+# everyone loves meaningful error messages :)
+qd_entity["TYPE","NID","WRONG_FIELD"]
+# >>> KeyError: "Could not find the following keys: ['WRONG_FIELD']"
+```
+
+### ```QDEntity.__setitem__(key, value)```
+
+Overloaded [] operator for setting card values.
+
+```python
+qd_entity["X1"] # entity is a mesh node
+# >>> 0.0
+qd_entity["X1"] = 1 # single setter
+qd_entity["X1","X2"] = 1,19 # list setter
+
+# intelligent error messages ... that's rare ...
+qd_entity["X1","X2","WRONG_FIELD"] = 1,19,"YAY" 
+# >>> KeyError: "Could not set the following cards: ['WRONG_FIELD']"
+```
+
+### ```QDEntity.__iter__()```
+
+Overlaoded operator for loops. With this, one can iterate over the ```ansa.base.Entity``` and gets card names and values as pair.
+
+```python
+for card_name,card_value in qd_entity:
+    print("%s : %s" % (card_name,card_value) )
+# >>> 'TYPE' : 'GRID'
+# >>> 'NID' : 1
+# >>> ...
+```
 
 
-Example:
+### Full Example:
+
 ```python
 from ansa import base
 from qd.ansa import QDEntity

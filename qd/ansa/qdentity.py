@@ -78,10 +78,10 @@ class QDEntity(base.Entity):
         # list of string key
         elif isinstance(key, (list,tuple,np.ndarray)):
             ret = base.GetEntityCardValues(self.myDeck, self, key)
-            if ret:
+            if len(ret) == len(key):
                 return [ret[key[ii]] for ii in range(len(key)) ]
             else:
-                unknown_keys = [ subkey for subkey in key if base.GetEntityCardValues(self.myDeck, self, [key])==None ]
+                unknown_keys = [ subkey for subkey in key if 0==len(base.GetEntityCardValues(self.myDeck, self, [subkey])) ]
                 if unknown_keys:
                     raise KeyError("Could not find the following keys: %s" % str(unknown_keys))
                 else:
@@ -108,7 +108,10 @@ class QDEntity(base.Entity):
             
             if base.SetEntityCardValues(self.myDeck, self, dict(zip(key, value))) != 0: # error
 
-                unknown_keys = [ key[ii] for ii in range(key) if base.SetEntityCardValues(self.myDeck, self, {key[ii]:value[ii]})!=0 ]
+                print("Type(key): %s" % str(type(key)))
+                print("Key: %s" % str(key))
+                print("Value: %s" % str(value))
+                unknown_keys = [ key[ii] for ii in range(len(key)) if 0!=base.SetEntityCardValues(self.myDeck, self, {key[ii]:value[ii]}) ]
                 if unknown_keys:
                     raise KeyError("Could not set the following cards: %s" % str(unknown_keys))
                 else:
