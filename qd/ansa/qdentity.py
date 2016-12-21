@@ -108,9 +108,6 @@ class QDEntity(base.Entity):
             
             if base.SetEntityCardValues(self.myDeck, self, dict(zip(key, value))) != 0: # error
 
-                print("Type(key): %s" % str(type(key)))
-                print("Key: %s" % str(key))
-                print("Value: %s" % str(value))
                 unknown_keys = [ key[ii] for ii in range(len(key)) if 0!=base.SetEntityCardValues(self.myDeck, self, {key[ii]:value[ii]}) ]
                 if unknown_keys:
                     raise KeyError("Could not set the following cards: %s" % str(unknown_keys))
