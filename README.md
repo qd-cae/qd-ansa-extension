@@ -58,8 +58,8 @@ for card_name, card_value in entity:
 | ```QDEntity.values()``` | Get all of the entities card values as ```list```
 | ```QDEntity.set_deck(deck)``` | Set the entity deck manually, use ```ansa.constants```
 | ```QDEntity.__len__()``` | Overloaded ```len```, returns numbe of cards
-| ```QDEntity.__getitem__()``` | Overloaded ```[]```, access entity cards like a dictionary, also accepts lists
-| ```QDEntity.__setitem__()``` | Overloaded ```[]```, change single or multiple card values directly
+| ```QDEntity.__getitem__(key)``` | Overloaded ```[]```, access entity cards like a dictionary, also accepts lists
+| ```QDEntity.__setitem__(key, value)``` | Overloaded ```[]```, change single or multiple card values directly
 | ```QDEntity.__iter__()``` | Overloaded iterator for loops, iterate over card names and values in the entity
 
 ------------------
