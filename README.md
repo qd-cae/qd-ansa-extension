@@ -9,9 +9,43 @@ These enhancements make access much easier, and also debugging! This module was 
 
 Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shared_v17.0.2/python/win64/Lib/site-packages
 
+# Full Example:
+
+```python
+from ansa import base
+from qd.ansa import QDEntity
+
+# never forget the help ...
+help(QDEntity)
+# >>> A lot of text ...
+
+entity_list = base.CollectEntities(base.CurrentDeck(), None, "GRID") # some model is already existing
+entity_list = QDEntity.convert(entity_list) # converts single entities, lists and dicts
+entity = entity_list[0] # choose first entity
+
+entity.cards()
+# >>> ['TYPE', 'NID', 'CP', 'X1', 'X2', 'X3', 'CD', 'PS', 'SEID', 'field 10', 'Name', 'FROZEN_ID', 'FROZEN_DELETE', 'AUXILIARY', 'Comment']
+
+entity["TYPE"] # access like a dict
+# >>> "GRID"
+
+entity["X1","X2","X3"] # also lists work
+# >>> [0.0, 20.0, 0.0]
+
+entity["X1","X2","X3"] = [1., 19., 1.] # either string or list(str) setter
+entity["X1","X2","X3"]
+# >>> [1.0, 19.0, 1.0]
+
+# error messages have always been missing ...
+print(entity["UNKNOWN"])
+# >>> KeyError: 'Key not found: UNKNOWN' 
+
+# we can iterate over the entity, like a dictionary
+for card_name, card_value in entity:
+    pass
+```
+
 # Classes
-
-
 
 ## QDEntity
 
@@ -134,38 +168,4 @@ for card_name,card_value in qd_entity:
 ```
 
 
-### Full Example:
 
-```python
-from ansa import base
-from qd.ansa import QDEntity
-
-# never forget the help ...
-help(QDEntity)
-# >>> A lot of text ...
-
-entity_list = base.CollectEntities(base.CurrentDeck(), None, "GRID") # some model is already existing
-entity_list = QDEntity.convert(entity_list) # converts single entities, lists and dicts
-entity = entity_list[0] # choose first entity
-
-entity.cards()
-# >>> ['TYPE', 'NID', 'CP', 'X1', 'X2', 'X3', 'CD', 'PS', 'SEID', 'field 10', 'Name', 'FROZEN_ID', 'FROZEN_DELETE', 'AUXILIARY', 'Comment']
-
-entity["TYPE"] # access like a dict
-# >>> "GRID"
-
-entity["X1","X2","X3"] # also lists work
-# >>> [0.0, 20.0, 0.0]
-
-entity["X1","X2","X3"] = [1., 19., 1.] # either string or list(str) setter
-entity["X1","X2","X3"]
-# >>> [1.0, 19.0, 1.0]
-
-# error messages have always been missing ...
-print(entity["UNKNOWN"])
-# >>> KeyError: 'Key not found: UNKNOWN' 
-
-# we can iterate over the entity, like a dictionary
-for card_name, card_value in entity:
-    pass
-```
