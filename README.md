@@ -19,9 +19,14 @@ from qd.ansa import QDEntity
 help(QDEntity)
 # >>> A lot of text ...
 
-entity_list = base.CollectEntities(base.CurrentDeck(), None, "GRID") # some model is already existing
-entity_list = QDEntity.convert(entity_list) # converts single entities, lists and dicts
-entity = entity_list[0] # choose first entity
+# NOTE:
+# Some ANSA Model is already open
+
+ansa_entity_list = base.CollectEntities(base.CurrentDeck(), None, "GRID") # method from ANSA
+qd_entity_list = QDEntity.convert(ansa_entity_list) # converts single entities, lists and dicts
+qd_entity_list = QDEntity.collect("GRID") # get them directly more comfortable :)
+
+entity = QDEntity.get("NODE", 1) # get an entity directly
 
 entity.cards()
 # >>> ['TYPE', 'NID', 'CP', 'X1', 'X2', 'X3', 'CD', 'PS', 'SEID', 'field 10', 'Name', 'FROZEN_ID', 'FROZEN_DELETE', 'AUXILIARY', 'Comment']
@@ -36,7 +41,7 @@ entity["X1","X2","X3"] = [1., 19., 1.] # either string or list(str) setter
 entity["X1","X2","X3"]
 # >>> [1.0, 19.0, 1.0]
 
-# error messages have always been missing ...
+# error messages ...
 print(entity["UNKNOWN"])
 # >>> KeyError: 'Key not found: UNKNOWN' 
 
@@ -49,10 +54,17 @@ for card_name, card_value in entity:
 
 ## QDEntity
 
-| Member Function | Short Explanation |
+| Static Functions | Short Explanation |
+| --- | --- |
+| ```QDEntity.convert(arg)``` | Static function for conversion of an entity or containers
+| ```QDEntity.collect(search_type, container=None, deck=base.CurrentDeck(), **kwargs)``` | Static function for collecting entities from the database
+| ```QDEntity.get(search_type, element_id, deck=base.CurrentDeck(), **kwargs)``` | Static function for getting an element from its type and id
+
+###
+
+| Member Functions | Short Explanation |
 | --- | --- |
 | ```QDEntity(entity, deck=None)``` | Constructor from a ```ansa.base.Entity```
-| ```QDEntity.convert(arg)``` | Static function for conversion of an entity or containers
 | ```QDEntity.cards()``` | Get all of the entities card names as ```list(str)```
 | ```QDEntity.keys()``` | Same as ```QDEntity.cards()```
 | ```QDEntity.values()``` | Get all of the entities card values as ```list```
@@ -63,6 +75,8 @@ for card_name, card_value in entity:
 | ```QDEntity.__iter__()``` | Overloaded iterator for loops, iterate over card names and values in the entity
 
 ------------------
+
+## Detailed Description
 
 ### ```QDEntity(entity, deck=None)```
 
@@ -86,6 +100,23 @@ entity_list = QDEntity.convert(entity_list) # "YAY" stays untouched
 
 entity_dict = { ansa_entity._id : ansa_entity } # some dictionary
 entity_dict= QDEntity.convert(ansa_entity) # converts keys/values if ansa entity
+```
+
+### ```QDEntity.collect(search_type, container=None, deck=base.CurrentDeck(), **kwargs)```
+
+This static method is a wrapper for ```ansa.base.CollectEntities```. It's a little more comfortable, since it does not require as many arguments. The Entities are returned as ```QDEntity```.
+
+```python
+qd_entities = QDEntity.collect("FACE")
+```
+
+### ```QDEntity.get(search_type, element_id, deck=base.CurrentDeck(), **kwargs)```
+
+This static method is a wrapper for ```ansa.base.GetEntity```. One may get an entity from
+its type and id. 
+
+```python
+qd_entity_face = QDEntity.get("FACE", 1)
 ```
 
 ### ```QDEntity.cards()``` or ```QDEntity.keys()```

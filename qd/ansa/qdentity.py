@@ -77,13 +77,20 @@ class QDEntity(base.Entity):
         
         # list of string key
         elif isinstance(key, (list,tuple,np.ndarray)):
+            
             ret = base.GetEntityCardValues(self.myDeck, self, key)
+            
+            # check if all cards could be found
             if len(ret) == len(key):
                 return [ret[key[ii]] for ii in range(len(key)) ]
+            
+            # some cards could not be found
             else:
-                unknown_keys = [ subkey for subkey in key if 0==len(base.GetEntityCardValues(self.myDeck, self, [subkey])) ]
+
+                unknown_keys = [ subkey for subkey in key if subkey not in ret]
+                #unknown_keys = [ subkey for subkey in key if 0==len(base.GetEntityCardValues(self.myDeck, self, [subkey])) ]
                 if unknown_keys:
-                    raise KeyError("Could not find the following keys: %s" % str(unknown_keys))
+                    raise KeyError("Could not find the following cards: %s" % str(unknown_keys))
                 else:
                     raise KeyError("Some key (unknown) was not found in %s" % str(key))
         
@@ -92,6 +99,10 @@ class QDEntity(base.Entity):
             raise TypeError("key must be of type string or list(str)/tuple(str)/np.ndarray(str), not %s." % str(type(key)))
 
     
+    ## Overloaded [] opeartor for setting entitiy cards
+    #
+    # @param str/list(str) key : card name or list of names
+    # @param object/list(object) value : 
     def __setitem__(self, key, value):
 		
         # just a string key
@@ -132,10 +143,10 @@ class QDEntity(base.Entity):
     ## Conver any object or container with ansa.base.Entity to QDEntity
     #
     # @param base.Entity/list(any)/dict(any) arg : entity or container with entities
+    # @return QDEntity/list(any)/dict(any) ret : converted argument
     #
-    # This function converts an ansa entity to a qd entity. If a list is give, any 
-    # entity within is converted WHILE ANY OTHER ENTRY IS UNTOUCHED! Same goes for
-    # dictionaries.
+    # This function converts an ansa entity to a qd entity. If a list or dict is given, any 
+    # entity within is converted WHILE ALL OTHER ENTRIES STAY UNTOUCHED! 
     # With this function, containers, which may contain entities can be converted
     # in a very comfortabel way.
     @staticmethod
@@ -152,4 +163,35 @@ class QDEntity(base.Entity):
                     QDEntity(value) if isinstance(value, base.Entity) else value for key,value in arg.items()}
 
         else:
-            raise ValueError("Argument is neither a ansa.base.Entity, nor a list of entities.")
+            raise ValueError("Argument is neither a ansa.base.Entity, nor a list/dict.")
+
+    
+    ## Similar to ansa.base.CollectEntities, but more convenient
+    #
+    # @param str entity_type : search type, e.g. "NODE"
+    # @param str container : reference to a container entity or list of container entities
+    # @param int deck : ansa deck used, see ansa.constants
+    # @param **kwargs : further optional arguments for CollectEntities
+    #
+    # This is a comfort wrapper for collection of entities in the qd environment. One just has
+    # to specify the type, everything else is optional. The entities are directly converted
+    # to QDEntities. 
+    # Further optional arguments are directly forwarded to base.CollectEntities!
+    #
+    # based on: ansa.base.CollectEntities(deck, containers, search_types, recursive, filter_visible, prop_from_entities, mat_from_entities)
+    @staticmethod
+    def collect(search_type, container=None, deck=base.CurrentDeck(), **kwargs):
+        return QDEntity.convert(base.CollectEntities( *(deck, container, search_type), **kwargs))
+
+    
+    ## Get an entity in the database
+    # 
+    # @param str entity_type : search type, e.g. "NODE"
+    # @param int element_id : id of the element to search
+    # @param int deck : ansa deck used, see ansa.constants
+    # @param **kwargs : further optional arguments for GetEntity
+    # 
+    # based on: ansa.base.GetEntity(deck, type, element_id, location)
+    @staticmethod
+    def get(search_type, element_id, deck=base.CurrentDeck(), **kwargs):
+        return QDEntity.convert( base.GetEntity( *(deck, search_type, element_id), **kwargs) )
