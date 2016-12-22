@@ -64,7 +64,7 @@ for card_name, card_value in entity:
 
 | Member Functions | Short Explanation |
 | --- | --- |
-| ```QDEntity(entity, deck=None)``` | Constructor from a ```ansa.base.Entity```
+| ```QDEntity(entity, deck=None)``` | Constructor from an ```ansa.base.Entity```
 | ```QDEntity.cards()``` | Get all of the entities card names as ```list(str)```
 | ```QDEntity.keys()``` | Same as ```QDEntity.cards()```
 | ```QDEntity.values()``` | Get all of the entities card values as ```list```
@@ -77,15 +77,6 @@ for card_name, card_value in entity:
 ------------------
 
 ## Detailed Description
-
-### ```QDEntity(entity, deck=None)```
-
-Constructor of a ```QDEntity``` from an ```ansa.base.Entity```. Deck can be specified with ```ansa.constants``` and uses ```base.CurrentDeck()``` if not specified.
-
-```python
-ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
-qd_entity = QDEntity(ansa_entity)
-```
 
 ### ```QDEntity.convert(arg)```
 
@@ -117,6 +108,15 @@ its type and id.
 
 ```python
 qd_entity_face = QDEntity.get("FACE", 1)
+```
+
+### ```QDEntity(entity, deck=None)```
+
+Constructor of a ```QDEntity``` from an ```ansa.base.Entity```. Deck can be specified with ```ansa.constants``` and uses ```base.CurrentDeck()``` if not specified.
+
+```python
+ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
+qd_entity = QDEntity(ansa_entity)
 ```
 
 ### ```QDEntity.cards()``` or ```QDEntity.keys()```
