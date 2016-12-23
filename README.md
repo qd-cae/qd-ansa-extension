@@ -9,7 +9,7 @@ These enhancements make access much easier, and also debugging! This module was 
 
 Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shared_v17.0.2/python/win64/Lib/site-packages
 
-# Full Example:
+# Large Example:
 
 ```python
 from ansa import base
@@ -24,7 +24,7 @@ help(QDEntity)
 
 ansa_entity_list = base.CollectEntities(base.CurrentDeck(), None, "GRID") # method from ANSA
 qd_entity_list = QDEntity.convert(ansa_entity_list) # converts single entities, lists and dicts
-qd_entity_list = QDEntity.collect("GRID") # get them directly more comfortable :)
+qd_entity_list = QDEntity.collect("GRID") # get them directly, more comfortable :)
 
 entity = QDEntity.get("NODE", 1) # get an entity directly
 
@@ -65,6 +65,7 @@ for card_name, card_value in entity:
 | Member Functions | Short Explanation |
 | --- | --- |
 | ```QDEntity(entity, deck=None)``` | Constructor from an ```ansa.base.Entity```
+| ```QDEntity.collect(search_type, deck=self.myDeck, **kwargs)``` | Collect entities, container is the instance itself
 | ```QDEntity.cards()``` | Get all of the entities card names as ```list(str)```
 | ```QDEntity.keys()``` | Same as ```QDEntity.cards()```
 | ```QDEntity.values()``` | Get all of the entities card values as ```list```
@@ -117,6 +118,17 @@ Constructor of a ```QDEntity``` from an ```ansa.base.Entity```. Deck can be spec
 ```python
 ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
 qd_entity = QDEntity(ansa_entity)
+```
+
+### ```QDEntity.collect(search_type, deck=self.myDeck, **kwargs)```
+
+Same as collect entities, but the container is the instance itself. For the generic 
+collect, call the static function from the class, not the instance. 
+
+```python
+qd_entities = QDEntity.collect("FACE") # static function collect
+face = qd_entities[0] # choose first face
+face_grids = face.collect("GRID") # collect GRIDS of face only!
 ```
 
 ### ```QDEntity.cards()``` or ```QDEntity.keys()```

@@ -140,6 +140,23 @@ class QDEntity(base.Entity):
         return iter(dict(zip(cards,self[cards])).items())
 
 
+    ## Collect entities belonging to this entity
+    #
+    # @param str entity_type : search type, e.g. "NODE"
+    # @param int deck : ansa deck used, see ansa.constants
+    # @param **kwargs : further optional arguments for CollectEntities
+    #
+    # This function works like base.CollectEntities, but the container is the
+    # entity itself!
+    # Further optional arguments are directly forwarded to base.CollectEntities.
+    #
+    # based on: ansa.base.CollectEntities(deck, containers, search_types, recursive, filter_visible, prop_from_entities, mat_from_entities)
+    def collect(self, search_type, deck=None, **kwargs):
+        if deck is None:
+            deck = self.myDeck
+        return QDEntity.convert(base.CollectEntities( *(deck, self, search_type), **kwargs))
+
+
     ## Conver any object or container with ansa.base.Entity to QDEntity
     #
     # @param base.Entity/list(any)/dict(any) arg : entity or container with entities
