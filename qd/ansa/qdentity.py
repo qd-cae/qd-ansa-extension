@@ -19,41 +19,6 @@ class QDEntity(base.Entity):
         super().__init__(self.myDeck, entity._id, entity._ansaType(0))
 
     
-#    def __init__(self,id,entity_type,deck=None):
-#        self.set_deck(deck)
-#        super().__init__(deck, id, entity_type)
-    
-
-    ## Set the deck of the entity
-    #
-    # @param int deck : use values in ansa.constants
-    def set_deck(self, deck):
-        if deck:
-            self.myDeck = deck
-        else:
-            self.myDeck = base.CurrentDeck()
-
-    
-    ## Get the entity card labels (not values)
-    #
-    # @return list(str) keys : list of card names
-    def keys(self):
-        return self.cards()
-
-
-    ## Get the entity card values
-    #
-    # @return list(str) values : list of card values
-    def values(self):
-        return self[self.cards()]
-
-    
-    ## Get the entity card labels (not values)
-    #
-    # @return list(str) keys : list of card names
-    def cards(self):
-        return self._cardFields(self.myDeck)
-	
     ## Returns number of cards
     #
     # @return int nCards
@@ -138,7 +103,38 @@ class QDEntity(base.Entity):
     def __iter__(self):
         cards = self.cards()
         return iter(dict(zip(cards,self[cards])).items())
+    
 
+    ## Set the deck of the entity
+    #
+    # @param int deck : use values in ansa.constants
+    def set_deck(self, deck):
+        if deck:
+            self.myDeck = deck
+        else:
+            self.myDeck = base.CurrentDeck()
+
+    
+    ## Get the entity card labels (not values)
+    #
+    # @return list(str) keys : list of card names
+    def keys(self):
+        return self.cards()
+
+
+    ## Get the entity card values
+    #
+    # @return list(str) values : list of card values
+    def values(self):
+        return self[self.cards()]
+
+    
+    ## Get the entity card labels (not values)
+    #
+    # @return list(str) keys : list of card names
+    def cards(self):
+        return self._cardFields(self.myDeck)
+	
 
     ## Collect entities belonging to this entity
     #
@@ -155,6 +151,28 @@ class QDEntity(base.Entity):
         if deck is None:
             deck = self.myDeck
         return QDEntity.convert(base.CollectEntities( *(deck, self, search_type), **kwargs))
+
+    
+    ## Opens the card for editation by user
+    #
+    # @return bool okIsPressed : whether the user pressed ok or cancel
+    def user_edit(self):
+        return (base.EditEntity(self.myDeck, self) == 0)
+
+
+    ## Create an entity
+    # 
+    # @param str entity_type
+    # @param int deck : ansa deck used, see ansa.constants
+    # @param **card_properties : optional arguments treated as fields for the enitity
+    # @return base.Entity entity
+    # 
+    # By default, deck=CurrentDeck will be used.
+    #
+    # based on: base.CreateEntity(deck, element_type, fields)
+    @staticmethod
+    def create(entity_type, deck=base.CurrentDeck(), **card_properties):
+        return QDEntity.convert(base.CreateEntity(deck, entity_type, card_properties))
 
 
     ## Conver any object or container with ansa.base.Entity to QDEntity
@@ -178,6 +196,10 @@ class QDEntity(base.Entity):
         elif isinstance(arg, dict):
             return {QDEntity(key) if isinstance(key, base.Entity) else value : 
                     QDEntity(value) if isinstance(value, base.Entity) else value for key,value in arg.items()}
+
+        elif arg is None:
+
+            raise ValueError("Can not convert None to QDEntity.")
 
         else:
             raise ValueError("Argument is neither a ansa.base.Entity, nor a list/dict.")

@@ -56,6 +56,7 @@ for card_name, card_value in entity:
 
 | Static Functions | Short Explanation |
 | --- | --- |
+| ```QDEntity.create(entity_type, deck=base.CurrentDeck(), **card_properties)``` | Static function for entity creation
 | ```QDEntity.convert(arg)``` | Static function for conversion of an entity or containers
 | ```QDEntity.collect(search_type, container=None, deck=base.CurrentDeck(), **kwargs)``` | Static function for collecting entities from the database
 | ```QDEntity.get(search_type, element_id, deck=base.CurrentDeck(), **kwargs)``` | Static function for getting an element from its type and id
@@ -65,19 +66,29 @@ for card_name, card_value in entity:
 | Member Functions | Short Explanation |
 | --- | --- |
 | ```QDEntity(entity, deck=None)``` | Constructor from an ```ansa.base.Entity```
+| ```QDEntity.__len__()``` | Overloaded ```len```, returns numbe of cards
+| ```QDEntity.__getitem__(key)``` | Overloaded ```[]```, access entity cards like a dictionary, also accepts lists
+| ```QDEntity.__setitem__(key, value)``` | Overloaded ```[]```, change single or multiple card values directly
+| ```QDEntity.__iter__()``` | Overloaded iterator for loops, iterate over card names and values in the entity
 | ```QDEntity.collect(search_type, deck=self.myDeck, **kwargs)``` | Collect entities, container is the instance itself
 | ```QDEntity.cards()``` | Get all of the entities card names as ```list(str)```
 | ```QDEntity.keys()``` | Same as ```QDEntity.cards()```
 | ```QDEntity.values()``` | Get all of the entities card values as ```list```
 | ```QDEntity.set_deck(deck)``` | Set the entity deck manually, use ```ansa.constants```
-| ```QDEntity.__len__()``` | Overloaded ```len```, returns numbe of cards
-| ```QDEntity.__getitem__(key)``` | Overloaded ```[]```, access entity cards like a dictionary, also accepts lists
-| ```QDEntity.__setitem__(key, value)``` | Overloaded ```[]```, change single or multiple card values directly
-| ```QDEntity.__iter__()``` | Overloaded iterator for loops, iterate over card names and values in the entity
-
+| ```QDEntity.user_edit()``` | Pops the entity card for the user for editation.
 ------------------
 
 ## Detailed Description
+
+### ```QDEntitycreate(entity_type, deck=base.CurrentDeck(), **card_properties)```
+
+This static method creates a QDEntity. It is a wrapper for )```base.CreateEntity)```. One has to specify solely the Type. 
+All other optional arguments are passed as a dictionary to the function, so that attribtues may be set directly.
+
+```python
+qd_entity = QDEntity.create("GRID") # create a grid
+qd_entity = QDEntity.create("GRID", X1=10, X2=20, X3=10) # create a grid with values
+```
 
 ### ```QDEntity.convert(arg)```
 
@@ -118,43 +129,6 @@ Constructor of a ```QDEntity``` from an ```ansa.base.Entity```. Deck can be spec
 ```python
 ansa_entity = ansa.base.Entity(deck=base.CurrentDeck(), id=1, type="GRID")
 qd_entity = QDEntity(ansa_entity)
-```
-
-### ```QDEntity.collect(search_type, deck=self.myDeck, **kwargs)```
-
-Same as collect entities, but the container is the instance itself. For the generic 
-collect, call the static function from the class, not the instance. 
-
-```python
-qd_entities = QDEntity.collect("FACE") # static function collect
-face = qd_entities[0] # choose first face
-face_grids = face.collect("GRID") # collect GRIDS of face only!
-```
-
-### ```QDEntity.cards()``` or ```QDEntity.keys()```
-
-Get all the card values of an entity as a list of str.
-
-```python
-qd_entity.cards() # this qd_entity is a "NODE"
-# >>> ['TYPE', 'NID', ... ] 
-```
-
-### ```QDEntity.values()```
-
-Get all the values for the cards as a list of objects.
-
-```python
-qd_entity.values() # this qd_entity is a "NODE"
-# >>> ['GRID', 1, ... ]
-```
-
-### ```QDEntity.set_deck(deck)```
-
-Set the deck of the entity. Use ```ansa.constants```.
-
-```python
-qd_entity.set_deck(ansa.constants.ABAQUS)
 ```
 
 ### ```QDEntity.__len__()```
@@ -210,5 +184,48 @@ for card_name,card_value in qd_entity:
 # >>> ...
 ```
 
+### ```QDEntity.collect(search_type, deck=self.myDeck, **kwargs)```
 
+Same as collect entities, but the container is the instance itself. For the generic 
+collect, call the static function from the class, not the instance. 
 
+```python
+qd_entities = QDEntity.collect("FACE") # static function collect
+face = qd_entities[0] # choose first face
+face_grids = face.collect("GRID") # collect GRIDS of face only!
+```
+
+### ```QDEntity.cards()``` or ```QDEntity.keys()```
+
+Get all the card values of an entity as a list of str.
+
+```python
+qd_entity.cards() # this qd_entity is a "NODE"
+# >>> ['TYPE', 'NID', ... ] 
+```
+
+### ```QDEntity.values()```
+
+Get all the values for the cards as a list of objects.
+
+```python
+qd_entity.values() # this qd_entity is a "NODE"
+# >>> ['GRID', 1, ... ]
+```
+
+### ```QDEntity.set_deck(deck)```
+
+Set the deck of the entity. Use ```ansa.constants```.
+
+```python
+qd_entity.set_deck(ansa.constants.ABAQUS)
+```
+
+### ```QDEntity.user_edit()```
+
+Pops up the card of the entity, so that the user can edit it. Returns, whether the user pressed ok (True) or not (False).
+
+```python
+qd_entity = QDEntity.get("FACE",1)
+qd_entity.user_edit() # pops up the dialog
+```
