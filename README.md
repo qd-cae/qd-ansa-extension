@@ -19,6 +19,10 @@ from qd.meta.export import export_to_html
 export_to_html("Filepath/for/HTML", use_fringe=True, fringe_bounds=[0,0.03] )
 ```
 
+[See Example 1](./examples/model_rail.html)
+
+[See Example 2](./examples/model_silverado.html)
+
 # ANSA Example
 
 ```python
