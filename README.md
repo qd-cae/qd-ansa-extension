@@ -1,7 +1,7 @@
 
 # qd-ansa 
 
-This library is a python utility library for ANSA from Beta CAE Systems SA. The project is not affiliated in any way with the official software. 
+This library is a python utility library for ANSA and META from Beta CAE Systems SA. The project is not affiliated in any way with the official software. 
 
 These enhancements make access much easier, and also debugging! This module was written for the reason, that the common scripting API did not feel pythonic enough to me. 
 
@@ -9,7 +9,17 @@ These enhancements make access much easier, and also debugging! This module was 
 
 Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shared_v17.0.2/python/win64/Lib/site-packages
 
-# Large Example:
+# META Example
+
+The META API has currently only one function, which exports your current model to an html file. Currently only shell elements are supported.
+
+```python
+from qd.meta.export import export_to_html
+
+export_to_html("Filepath/for/HTML", use_fringe=True, fringe_bounds=[0,0.03] )
+```
+
+# ANSA Example
 
 ```python
 from ansa import base
@@ -80,9 +90,9 @@ for card_name, card_value in entity:
 
 ## Detailed Description
 
-### ```QDEntitycreate(entity_type, deck=base.CurrentDeck(), **card_properties)```
+### ```QDEntity.create(entity_type, deck=base.CurrentDeck(), **card_properties)```
 
-This static method creates a QDEntity. It is a wrapper for )```base.CreateEntity)```. One has to specify solely the Type. 
+This static method creates a QDEntity. It is a wrapper for ```base.CreateEntity```. One has to specify solely the Type. 
 All other optional arguments are passed as a dictionary to the function, so that attribtues may be set directly.
 
 ```python
