@@ -5,6 +5,8 @@ This library is a python utility library for ANSA and META from Beta CAE Systems
 
 These enhancements make access much easier, and also debugging! This module was written for the reason, that the common scripting API did not feel pythonic enough to me. 
 
+Authors: D. Toewe, C. Diez
+
 # Installation
 
 Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shared_v17.0.2/python/win64/Lib/site-packages
