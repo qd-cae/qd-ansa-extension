@@ -21,7 +21,9 @@ from qd.meta.export import export_to_html
 export_to_html("Filepath/for/HTML", use_fringe=True, fringe_bounds=[0,0.03] )
 ```
 
-[See examples here.](./examples)
+[Download example HTMLs here.](./examples)
+
+![Live Video here.](./resources/model_to_html.gif "Live Example.")
 
 # ANSA Example
 
