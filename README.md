@@ -16,9 +16,11 @@ Just copy the fles into your installation folder: /Path/to/BETA_CAE_Systems/shar
 The META API has currently only one function, which exports your current model to an html file. Currently only shell elements are supported.
 
 ```python
+import webbrowser
 from qd.meta.export import export_to_html
 
 export_to_html("Filepath/for/HTML", use_fringe=True, fringe_bounds=[0,0.03] )
+webbrowser.open("Filepath/for/HTML")
 ```
 
 [Download example HTMLs here.](./examples)
@@ -26,6 +28,8 @@ export_to_html("Filepath/for/HTML", use_fringe=True, fringe_bounds=[0,0.03] )
 ![Live Video here.](./resources/model_to_html.gif "Live Example.")
 
 # ANSA Example
+
+The ANSA API was wrapped for usability. I concentrated many (static) functions into the class QDEntity and got rid of annoying additional arguments. 
 
 ```python
 from ansa import base
